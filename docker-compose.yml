@@ -1,0 +1,28 @@
+services:
+  mock-api:
+    build: .
+    command: python mock_api/app.py
+    environment:
+      PORT: 5001
+    ports:
+      - "5001:5001"
+
+  web:
+    build: .
+    depends_on:
+      - mock-api
+    environment:
+      SECRET_KEY: ${SECRET_KEY:-troque-esta-chave}
+      DATABASE_PATH: /app/data/agenda.db
+      API_URL: http://mock-api:5001/agendamentos
+      API_TIMEOUT: ${API_TIMEOUT:-5}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+      SEED_USER_EMAIL: ${SEED_USER_EMAIL:-admin@timesaver.com.br}
+      SEED_USER_PASSWORD: ${SEED_USER_PASSWORD:-admin123}
+    volumes:
+      - dados:/app/data
+    ports:
+      - "5000:5000"
+
+volumes:
+  dados:
