@@ -83,3 +83,6 @@ def filtrar(agendamentos: list[dict], termo: str | None) -> list[dict]:
         or alvo in _normalizar(a["medico"])
     ]
 
+def _normalizar(valor: str) -> str:
+    """Minúsculas e sem pontuação de CPF, para a busca ser tolerante."""
+    return "".join(c for c in valor.lower() if c.isalnum() or c.isspace())
