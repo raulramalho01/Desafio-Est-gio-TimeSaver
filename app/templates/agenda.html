@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% block titulo %}Agenda Médica{% endblock %}
+
+{% block cabeca %}
+<link href="https://unpkg.com/tabulator-tables@6.3.0/dist/css/tabulator_simple.min.css" rel="stylesheet">
+<script src="https://unpkg.com/tabulator-tables@6.3.0/dist/js/tabulator.min.js"></script>
+{% endblock %}
+
+{% block corpo %}
+<header class="topo">
+  <h1>Agenda Médica</h1>
+  <div style="display:flex; align-items:center; gap:1rem;">
+    <span class="usuario">{{ usuario }}</span>
+    <form method="post" action="{{ url_for('auth.logout') }}">
+      <button class="secundario" type="submit">Sair</button>
+    </form>
+  </div>
+</header>
+
+<main>
+  <div class="cartao">
+    <div style="display:flex; gap:.6rem; flex-wrap:wrap; margin-bottom:1rem;">
+      <input type="search" id="busca" placeholder="Buscar por paciente, CPF ou médico"
+             style="flex:1; min-width:240px;" aria-label="Buscar agendamentos">
+      <button id="btn-buscar" type="button">Buscar</button>
+      <button id="btn-limpar" class="secundario" type="button">Limpar</button>
+    </div>
+
+    <div id="mensagem" class="alerta" role="status" hidden></div>
+    <div id="tabela"></div>
+  </div>
+</main>
+
+<script>
+  const mensagem = document.getElementById("mensagem");
+  const busca = document.getElementById("busca");
+
+  function mostrarMensagem(texto, tipo) {
+    mensagem.textContent = texto || "";
+    mensagem.className = "alerta" + (tipo === "erro" ? " erro" : "");
+    mensagem.hidden = !texto;
+  }
+
+  const tabela = new Tabulator("#tabela", {
+    layout: "fitColumns",
+    pagination: true,
+    paginationSize: 10,
+    placeholder: "Nenhum agendamento para exibir.",
+    columns: [
+      { title: "Data", field: "data", width: 110 },
+      { title: "Horário", field: "horario", width: 100 },
+      { title: "Paciente", field: "paciente", minWidth: 170 },
+      { title: "CPF", field: "cpf", width: 150 },
+      { title: "Médico", field: "medico", minWidth: 170 },
+      { title: "Especialidade", field: "especialidade", minWidth: 140 },
+      { title: "Convênio", field: "convenio", minWidth: 120 },
+      { title: "Status", field: "status", width: 120 },
+    ],
+  });
+
+  async function carregar() {
+    const termo = busca.value.trim();
+    mostrarMensagem("Carregando…");
+    try {
+      const url = "{{ url_for('agenda.dados') }}?q=" + encodeURIComponent(termo);
+      const resposta = await fetch(url);
+      if (resposta.status === 401 || resposta.redirected) {
+        window.location = "{{ url_for('auth.login') }}";
+        return;
+      }
+      const corpo = await resposta.json();
+      await tabela.setData(corpo.dados || []);
+      mostrarMensagem(corpo.mensagem, resposta.ok ? "aviso" : "erro");
+    } catch (erro) {
+      await tabela.setData([]);
+      mostrarMensagem("Não foi possível carregar a agenda. Tente novamente.", "erro");
+    }
+  }
+
+  document.getElementById("btn-buscar").addEventListener("click", carregar);
+  document.getElementById("btn-limpar").addEventListener("click", () => {
+    busca.value = "";
+    carregar();
+  });
+  busca.addEventListener("keydown", (e) => { if (e.key === "Enter") carregar(); });
+
+  tabela.on("tableBuilt", carregar);
+</script>
+{% endblock %}
