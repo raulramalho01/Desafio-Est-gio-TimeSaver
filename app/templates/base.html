@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}Agenda Médica{% endblock %}</title>
+  <style>
+    :root {
+      --tinta: #16302b;
+      --tinta-suave: #5c716c;
+      --linha: #dfe6e3;
+      --fundo: #f4f7f6;
+      --acento: #0f766e;
+      --erro: #9f1239;
+      --erro-fundo: #fdf2f5;
+      --aviso-fundo: #eef5f3;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+      background: var(--fundo);
+      color: var(--tinta);
+      line-height: 1.5;
+    }
+    header.topo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      padding: 1rem 1.5rem;
+      background: #fff;
+      border-bottom: 1px solid var(--linha);
+    }
+    header.topo h1 { font-size: 1.05rem; margin: 0; letter-spacing: .02em; }
+    header.topo .usuario { font-size: .85rem; color: var(--tinta-suave); }
+    main { max-width: 1180px; margin: 0 auto; padding: 1.5rem; }
+    .cartao {
+      background: #fff;
+      border: 1px solid var(--linha);
+      border-radius: 10px;
+      padding: 1.5rem;
+    }
+    label { display: block; font-size: .82rem; font-weight: 600; margin-bottom: .3rem; }
+    input[type=text], input[type=password], input[type=search] {
+      width: 100%;
+      padding: .6rem .7rem;
+      border: 1px solid var(--linha);
+      border-radius: 6px;
+      font-size: .95rem;
+      background: #fff;
+    }
+    input:focus-visible, button:focus-visible {
+      outline: 2px solid var(--acento);
+      outline-offset: 2px;
+    }
+    button {
+      font: inherit;
+      font-weight: 600;
+      padding: .6rem 1.1rem;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      background: var(--acento);
+      color: #fff;
+      cursor: pointer;
+    }
+    button.secundario { background: #fff; color: var(--tinta); border-color: var(--linha); }
+    .alerta {
+      padding: .7rem .9rem;
+      border-radius: 6px;
+      font-size: .9rem;
+      margin-bottom: 1rem;
+      border: 1px solid var(--linha);
+      background: var(--aviso-fundo);
+    }
+    .alerta.erro { background: var(--erro-fundo); border-color: #f3c6d3; color: var(--erro); }
+  </style>
+  {% block cabeca %}{% endblock %}
+</head>
+<body>
+  {% block corpo %}{% endblock %}
+</body>
+</html>

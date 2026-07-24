@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block titulo %}Entrar — Agenda Médica{% endblock %}
+
+{% block corpo %}
+<main style="max-width: 380px; margin-top: 8vh;">
+  <h1 style="font-size:1.4rem; margin-bottom:.25rem;">Agenda Médica</h1>
+  <p style="color:var(--tinta-suave); margin-top:0; font-size:.9rem;">
+    Entre para consultar os agendamentos.
+  </p>
+
+  <div class="cartao">
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% for categoria, texto in mensagens %}
+        <div class="alerta {{ 'erro' if categoria == 'erro' else '' }}">{{ texto }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="post" action="{{ url_for('auth.login') }}">
+      <div style="margin-bottom:1rem;">
+        <label for="login">Usuário ou e-mail</label>
+        <input type="text" id="login" name="login" value="{{ login }}" autofocus required>
+      </div>
+      <div style="margin-bottom:1.25rem;">
+        <label for="senha">Senha</label>
+        <input type="password" id="senha" name="senha" required>
+      </div>
+      <button type="submit" style="width:100%;">Entrar</button>
+    </form>
+  </div>
+</main>
+{% endblock %}
