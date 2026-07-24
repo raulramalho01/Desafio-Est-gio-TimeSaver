@@ -2,3 +2,5 @@
 data/
 .env
 app/__pycache__
+app/blueprints/__pycache__
+__pycache__
